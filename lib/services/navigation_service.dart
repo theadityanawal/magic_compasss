@@ -1,3 +1,4 @@
+// navigation_service.dart
 import '../models/step_detector.dart';
 import '../models/orientation_detector.dart';
 import '../models/location.dart';
@@ -10,6 +11,24 @@ class NavigationService {
   Location? _currentLocation;
   Location? _destination;
   final double _strideLength = 0.75; // You can estimate this value based on the user's height
+  bool _isSelectingCurrentLocation = false;
+
+  // Additional method to reset the origin
+  void resetOrigin() {
+    _origin = null;
+  }
+
+  void startSelectingCurrentLocation() {
+    _isSelectingCurrentLocation = true;
+  }
+
+  void stopSelectingCurrentLocation() {
+    _isSelectingCurrentLocation = false;
+  }
+
+  bool isSelectingCurrentLocation() {
+    return _isSelectingCurrentLocation;
+  }
 
   void startNavigation({Location? destination}) {
     if (destination != null) {
@@ -28,7 +47,7 @@ class NavigationService {
   void _onStepDetected(int stepCount) {
     // Update _currentLocation based on the step count and orientation
     double stepDistance = _strideLength; // The distance covered in one step
-    double orientationInRadians = _orientationDetector.getOrientation() * (3.14159 / 180);
+    double orientationInRadians = _orientationDetector.getOrientation() * (pi / 180);
     double deltaX = stepDistance * cos(orientationInRadians);
     double deltaY = stepDistance * sin(orientationInRadians);
     _currentLocation = Location(

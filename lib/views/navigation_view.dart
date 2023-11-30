@@ -1,3 +1,4 @@
+// navigation_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import '../services/navigation_service.dart';
@@ -6,7 +7,6 @@ import 'calibration_view.dart';
 import 'location_selection_view.dart';
 import '../models/location.dart';
 import 'dart:math';
-
 
 class NavigationView extends StatefulWidget {
   final NavigationService navigationService;
@@ -32,7 +32,7 @@ class _NavigationViewState extends State<NavigationView> {
     });
   }
 
-    double _calculateDirection() {
+  double _calculateDirection() {
     Location? currentLocation = widget.navigationService.getCurrentLocation();
     Location? destination = widget.navigationService.getDestination();
 
@@ -50,7 +50,7 @@ class _NavigationViewState extends State<NavigationView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Magic Compass'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Center(
         child: Column(
@@ -65,7 +65,7 @@ class _NavigationViewState extends State<NavigationView> {
               style: TextStyle(fontSize: 20),
             ),
             Transform.rotate(
-              angle: ((_direction) * (3.14159 / 180) * -1),
+              angle: ((_direction) * (pi / 180) * -1),
               child: Image.asset('assets/compass.png'),
             ),
             ElevatedButton(
@@ -91,17 +91,35 @@ class _NavigationViewState extends State<NavigationView> {
               },
             ),
             ElevatedButton(
-              child: Text('Select Destination'),
+              child: Text('Select Current Location'),
               onPressed: () {
+                widget.navigationService.startSelectingCurrentLocation();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => LocationSelectionView(navigationService: widget.navigationService)),
                 );
               },
             ),
+            ElevatedButton(
+              child: Text('Select Destination'),
+              onPressed: () {
+                widget.navigationService.stopSelectingCurrentLocation();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LocationSelectionView(navigationService: widget.navigationService)),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: Text('Reset Origin'),
+              onPressed: () {
+                widget.navigationService.resetOrigin();
+                // Additional logic if needed
+              },
+            ),
           ],
         ),
-      ), 
+      ),
     );
   }
 }

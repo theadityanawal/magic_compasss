@@ -1,3 +1,4 @@
+// location_selection_view.dart
 import 'package:flutter/material.dart';
 import '../services/navigation_service.dart';
 import '../main.dart';
@@ -16,8 +17,8 @@ class _LocationSelectionViewState extends State<LocationSelectionView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Destination'),
-        backgroundColor: Colors.blueGrey,
+        title: Text('Select Location'),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ListView.builder(
         itemCount: locations.length,
@@ -25,10 +26,14 @@ class _LocationSelectionViewState extends State<LocationSelectionView> {
           return Card(
             child: ListTile(
               leading: Icon(Icons.location_on),
-              title:
-                  Text(locations[index].name, style: TextStyle(fontSize: 20)),
+              title: Text(locations[index].name, style: TextStyle(fontSize: 20)),
               onTap: () {
-                widget.navigationService.setDestination(locations[index]);
+                // Check if the current location is being selected
+                if (widget.navigationService.isSelectingCurrentLocation()) {
+                  widget.navigationService.setCurrentLocation(locations[index]);
+                } else {
+                  widget.navigationService.setDestination(locations[index]);
+                }
                 Navigator.pop(context);
               },
             ),
